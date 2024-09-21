@@ -1,7 +1,7 @@
 #include "window_drawer.h"
 
 SDL_Window* window_init() {
-    if(SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+    if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
         printf("SDL_InitSubSystem error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
@@ -73,4 +73,16 @@ void draw_palette(SDL_Renderer* renderer, int window_width, int window_height,
         }
     }
     SDL_RenderPresent(renderer);
+}
+
+Uint32 timer_callback(Uint32 interval, void* args) {
+    timer_data* timer_info = (timer_data*) args;
+    SDL_SetRenderDrawColor(timer_info->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(timer_info->renderer);
+    
+    draw_palette(timer_info->renderer, timer_info->window_width, timer_info->window_height, timer_info->palette->r, timer_info->palette->g, timer_info->palette->b, timer_info->palette->rgb);
+
+    SDL_RenderPresent(timer_info->renderer);
+
+    return interval;
 }
