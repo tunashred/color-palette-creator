@@ -32,57 +32,75 @@ SDL_Renderer* create_renderer(SDL_Window* window, int index, Uint32 flags) {
     return renderer;
 }
 
-void draw_palette(SDL_Renderer* renderer, int window_width, int window_height, 
-                  uint8_t* red_array, uint8_t* green_array, uint8_t* blue_array, uint8_t (*combined_array)[3]) {
-    
-    int stripe_height = window_height / 4;
+void draw_palette_to_texture(SDL_Texture* texture, int window_width,
+                            int window_height, uint8_t* red_array, uint8_t* green_array,
+                            uint8_t* blue_array, uint8_t (*combined_array)[3]) {
+    void* pixels;
+    int pitch;
 
+    SDL_LockTexture(texture, NULL, &pixels, &pitch);
+    uint32_t* pixel_data = (uint32_t*) pixels;
+
+    int stripe_height = window_height / 4;
+    int palette_size = 1500;
+
+    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+
+    // Red stripe
     for (int y = 0; y < stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
-            uint8_t red = red_array[x % window_width];
-            SDL_SetRenderDrawColor(renderer, red, 0, 0, 255);
-            SDL_RenderDrawPoint(renderer, x, y);
+            int palette_index = (x * palette_size) / window_width;
+            uint8_t red = red_array[palette_index];
+            pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, red, 0, 0, 255);
         }
     }
 
+    // Green stripe
     for (int y = stripe_height; y < 2 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
-            uint8_t green = green_array[x % window_width];
-            SDL_SetRenderDrawColor(renderer, 0, green, 0, 255);
-            SDL_RenderDrawPoint(renderer, x, y);
+            int palette_index = (x * palette_size) / window_width;
+            uint8_t green = green_array[palette_index];
+            pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, 0, green, 0, 255);
         }
     }
 
-    // Draw the blue stripe
+    // Blue stripe
     for (int y = 2 * stripe_height; y < 3 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
-            uint8_t blue = blue_array[x % window_width];
-            SDL_SetRenderDrawColor(renderer, 0, 0, blue, 255);
-            SDL_RenderDrawPoint(renderer, x, y);
+            int palette_index = (x * palette_size) / window_width;
+            uint8_t blue = blue_array[palette_index];
+            pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, 0, 0, blue, 255);
         }
     }
 
-    // Draw the combined RGB stripe
+    // RGB stripe
     for (int y = 3 * stripe_height; y < 4 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
-            uint8_t red = combined_array[x % window_width][0];
-            uint8_t green = combined_array[x % window_width][1];
-            uint8_t blue = combined_array[x % window_width][2];
-            SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
-            SDL_RenderDrawPoint(renderer, x, y);
+            int palette_index = (x * palette_size) / window_width;
+            uint8_t red = combined_array[palette_index][0];
+            uint8_t green = combined_array[palette_index][1];
+            uint8_t blue = combined_array[palette_index][2];
+            pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, red, green, blue, 255);
         }
     }
-    SDL_RenderPresent(renderer);
+
+    SDL_UnlockTexture(texture);
+    SDL_FreeFormat(format);
 }
 
-Uint32 timer_callback(Uint32 interval, void* args) {
-    timer_data* timer_info = (timer_data*) args;
-    SDL_SetRenderDrawColor(timer_info->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(timer_info->renderer);
-    
-    draw_palette(timer_info->renderer, timer_info->window_width, timer_info->window_height, timer_info->palette->r, timer_info->palette->g, timer_info->palette->b, timer_info->palette->rgb);
+Uint32 trigger_redraw_event(Uint32 interval, void* args) {
+    SDL_Event event;
+    SDL_UserEvent user_event;
 
-    SDL_RenderPresent(timer_info->renderer);
+    user_event.type = SDL_USEREVENT;
+    user_event.code = 0;
+    user_event.data1 = args;
+    user_event.data2 = NULL;
+
+    event.type = SDL_USEREVENT;
+    event.user = user_event;
+
+    SDL_PushEvent(&event);
 
     return interval;
 }
