@@ -24,4 +24,9 @@ typedef struct {
 
 Uint32 trigger_redraw_event(Uint32 interval, void* args);
 
+void create_palette(
+    char* file_name, double brightness_rate, uint8_t (*red_func)(int, int),
+    uint8_t (*green_func)(int, int), uint8_t (*blue_func)(int, int)
+);
+
 #endif
