@@ -10,16 +10,6 @@
 #define NUM_COLORS 1500
 #define NUM_MAPPING_FUNCTIONS 9
 
-typedef struct {
-    uint8_t r[NUM_COLORS];
-    uint8_t g[NUM_COLORS];
-    uint8_t b[NUM_COLORS];
-    uint8_t rgb[NUM_COLORS][RGB_CHANNELS];
-    uint8_t (*red_func) (int, int);
-    uint8_t (*green_func) (int, int);
-    uint8_t (*blue_func) (int, int);
-} color_palette;
-
 double linear_map(double from, double from_min, double from_max, double to_min, double to_max);
 
 // y = sin(x/3), x <= 100
@@ -49,14 +39,5 @@ uint8_t sin_x_la_4(int iter_count, int num_iters);
 uint8_t mapare_simpla(int iter_count, int num_iters);
 
 uint8_t map_color(int iter_count, int num_iters, uint8_t (*color_mapping_func)(int, int));
-
-void generate_color_palette(
-    color_palette* palette,
-    char* palette_file,
-    double brightness_rate,
-    uint8_t (*red_func)(int, int),
-    uint8_t (*green_func)(int, int),
-    uint8_t (*blue_func)(int, int)
-);
 
 #endif

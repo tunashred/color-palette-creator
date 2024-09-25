@@ -1,4 +1,4 @@
-#include "color_mapping.h"
+#include "color_functions.h"
 
 double linear_map(double from, double from_min, double from_max, double to_min, double to_max) {
     double interval_from = from_max - from_min;
@@ -79,51 +79,4 @@ uint8_t map_color(int iter_count, int num_iters, uint8_t (*color_mapping_func)(i
         return 0;
     }
     return color_mapping_func(iter_count, num_iters);
-}
-
-void generate_color_palette(
-        color_palette* palette,
-        char* palette_file,
-        double brightness_rate,
-        uint8_t (*red_func)(int, int),
-        uint8_t (*green_func)(int, int),
-        uint8_t (*blue_func)(int, int)
-) {
-    // Case 1: Loading from file
-    if(palette_file) {
-        FILE* file = fopen(palette_file, "r");
-        if(!file) {
-            fprintf(stderr, "Couldn't open the file: %s\n", palette_file);
-            exit(EXIT_FAILURE);
-        }
-        
-        for(int i = 0; i < NUM_COLORS; i++) {
-            if(fscanf(file, "%hhu %hhu %hhu", &palette->r[i], &palette->g[i], &palette->b[i]) != RGB_CHANNELS) {
-                fprintf(stderr, "Incomplete palette file\n");
-                exit(EXIT_FAILURE);
-            }
-            palette->rgb[i][0] = (uint8_t) fmin(1499, (double)palette->r[i] * brightness_rate);
-            palette->rgb[i][1] = (uint8_t) fmin(1499, (double)palette->g[i] * brightness_rate);
-            palette->rgb[i][2] = (uint8_t) fmin(1499, (double)palette->b[i] * brightness_rate);
-        }
-        fclose(file);
-        return;
-    }
-    if (!red_func || !green_func || !blue_func) {
-        fprintf(stderr, "Please provide all color mapping functions\n");
-        exit(EXIT_FAILURE);
-    }
-    // Case 2: Generate using given color mapping functions
-    palette->red_func = red_func;
-    palette->green_func = green_func;
-    palette->blue_func = blue_func;
-    for(int i = 0; i < NUM_COLORS; i++) {
-        palette->r[i] = map_color(i, NUM_COLORS, red_func);
-        palette->g[i] = map_color(i, NUM_COLORS, green_func);
-        palette->b[i] = map_color(i, NUM_COLORS, blue_func);
-
-        palette->rgb[i][0] = (uint8_t) fmin(1499, (double)palette->r[i] * brightness_rate);
-        palette->rgb[i][1] = (uint8_t) fmin(1499, (double)palette->g[i] * brightness_rate);
-        palette->rgb[i][2] = (uint8_t) fmin(1499, (double)palette->b[i] * brightness_rate);
-    }
 }
