@@ -114,6 +114,9 @@ void generate_color_palette(
         exit(EXIT_FAILURE);
     }
     // Case 2: Generate using given color mapping functions
+    palette->red_func = red_func;
+    palette->green_func = green_func;
+    palette->blue_func = blue_func;
     for(int i = 0; i < NUM_COLORS; i++) {
         palette->r[i] = map_color(i, NUM_COLORS, red_func);
         palette->g[i] = map_color(i, NUM_COLORS, green_func);

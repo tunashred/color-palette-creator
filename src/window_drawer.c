@@ -106,22 +106,36 @@ Uint32 trigger_redraw_event(Uint32 interval, void* args) {
 }
 
 void color_function_changer(int pressed_key, color_palette* palette) {
+    static uint8_t (*color_mapping_functions[NUM_MAPPING_FUNCTIONS]) (int, int) = {
+        sin_crescator, log_pe_sin, unu_minus_unu_pe_x, x_patrat_0_5, x_patrat_0_1,
+        x_patrat_0_1_to_0_2, sin_jos_sus_jos, sin_x_la_4, mapare_simpla
+    };
+    static int r_index = 0, g_index = 0, b_index = 0;
+    
     switch(pressed_key) {
         case SDLK_r:
-
+            if(r_index >= NUM_MAPPING_FUNCTIONS) {
+                r_index = 0;
+            }
+            generate_color_palette(palette, NULL, 1, color_mapping_functions[r_index++], palette->green_func, palette->blue_func);
             break;
 
         case SDLK_g:
-
+            if(g_index >= NUM_MAPPING_FUNCTIONS) {
+                g_index = 0;
+            }
+            generate_color_palette(palette, NULL, 1, palette->red_func, color_mapping_functions[g_index++], palette->blue_func);
             break;
 
         case SDLK_b:
-
+            if(b_index >= NUM_MAPPING_FUNCTIONS) {
+                b_index = 0;
+            }
+            generate_color_palette(palette, NULL, 1, palette->red_func, palette->green_func, color_mapping_functions[b_index++]);
             break;
 
         default: break;
     }
-
 }
 
 void create_palette(
@@ -171,9 +185,9 @@ void create_palette(
             else if(event.type == SDL_USEREVENT) { // timed redraw event
                 needs_redraw = 1;
             }
-            // else if(event.type == SDL_KEYDOWN) {
-            //     color_function_changer(event.key.keysym.sym, &palette);
-            // }
+            else if(event.type == SDL_KEYDOWN) { // changing colors with R, G, B key presses
+                color_function_changer(event.key.keysym.sym, &palette);
+            }
         }
         
         if(needs_redraw) {

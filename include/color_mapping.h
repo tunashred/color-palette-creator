@@ -15,6 +15,9 @@ typedef struct {
     uint8_t g[NUM_COLORS];
     uint8_t b[NUM_COLORS];
     uint8_t rgb[NUM_COLORS][RGB_CHANNELS];
+    uint8_t (*red_func) (int, int);
+    uint8_t (*green_func) (int, int);
+    uint8_t (*blue_func) (int, int);
 } color_palette;
 
 double linear_map(double from, double from_min, double from_max, double to_min, double to_max);
@@ -44,11 +47,6 @@ uint8_t sin_jos_sus_jos(int iter_count, int num_iters);
 uint8_t sin_x_la_4(int iter_count, int num_iters);
 
 uint8_t mapare_simpla(int iter_count, int num_iters);
-
-uint8_t (*color_mapping_functions[NUM_MAPPING_FUNCTIONS]) (int, int) = {
-    sin_crescator, log_pe_sin, unu_minus_unu_pe_x, x_patrat_0_5, x_patrat_0_1,
-    x_patrat_0_1_to_0_2, sin_jos_sus_jos, sin_x_la_4, mapare_simpla
-};
 
 uint8_t map_color(int iter_count, int num_iters, uint8_t (*color_mapping_func)(int, int));
 
