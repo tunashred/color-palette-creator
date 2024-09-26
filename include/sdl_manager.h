@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-SDL_Window* window_init();
+SDL_Window* window_init(int window_width, int window_height);
 
 SDL_Renderer* create_renderer(SDL_Window* window, int index, Uint32 flags);
 
