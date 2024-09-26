@@ -55,3 +55,9 @@ void draw_palette_to_texture(SDL_Texture* texture, int window_width,
     SDL_UnlockTexture(texture);
     SDL_FreeFormat(format);
 }
+
+void update_and_render_texture(SDL_Renderer* renderer, SDL_Texture* texture, color_palette* palette, int window_width, int window_height) {
+    draw_palette_to_texture(texture, window_width, window_height, palette->r, palette->g, palette->b, palette->rgb);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+}

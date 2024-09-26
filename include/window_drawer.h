@@ -20,4 +20,6 @@ typedef struct {
     SDL_Texture* texture;
 } redraw_event_data;
 
+void update_and_render_texture(SDL_Renderer* renderer, SDL_Texture* texture, color_palette* palette, int window_width, int window_height);
+
 #endif
