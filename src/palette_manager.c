@@ -47,6 +47,21 @@ void generate_color_palette(
     }
 }
 
+void export_palette(color_palette* palette) {
+    FILE* file;
+    if( (file = fopen("output_palette.txt", "wt")) == NULL ) {
+        fprintf(stderr, "Couldn't create file for export.");
+        return;
+    }
+
+    for(int i = 0; i < NUM_COLORS; i++) {
+        fprintf(file, "%d %d %d\n", palette->rgb[i][0], palette->rgb[i][1], palette->rgb[i][2]);
+    }
+    printf("Color palette exported.\n");
+
+    fclose(file);
+}
+
 void color_function_changer(int pressed_key, color_palette* palette) {
     static uint8_t (*color_mapping_functions[NUM_MAPPING_FUNCTIONS]) (int, int) = {
         sin_crescator, log_pe_sin, unu_minus_unu_pe_x, x_patrat_0_5, x_patrat_0_1,

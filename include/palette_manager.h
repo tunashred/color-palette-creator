@@ -20,6 +20,8 @@ void generate_color_palette(color_palette* palette, char* file_name, double brig
                             uint8_t (*r_func)(int, int), uint8_t (*g_func)(int, int), 
                             uint8_t (*b_func)(int, int));
 
+void export_palette(color_palette* palette);
+
 void color_function_changer(int pressed_key, color_palette* palette);
 
 #endif

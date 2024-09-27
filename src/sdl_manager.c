@@ -75,7 +75,11 @@ int handle_sdl_events(SDL_Event* event, int* running, SDL_Window* window, redraw
             needs_redraw = 1;
         }
         else if(event->type == SDL_KEYDOWN) { // changing colors with R, G, B key presses
-            color_function_changer(event->key.keysym.sym, palette);
+            if(event->key.keysym.sym == SDLK_x) {
+                export_palette(palette);
+            } else {
+                color_function_changer(event->key.keysym.sym, palette);
+            }
         }
     }
     return needs_redraw;
