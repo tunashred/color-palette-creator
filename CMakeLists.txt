@@ -12,10 +12,7 @@ project(color-palette-creator VERSION 0.1.0 LANGUAGES C CXX)
 # Include header files
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-# Find all source files
-file(GLOB C_SOURCES "src/*.c")
-
-set(MAIN_FILE_PATH "${CMAKE_SOURCE_DIR}/src/main.c")
+set(MAIN_FILE_PATH "${CMAKE_SOURCE_DIR}/main.c")
 
 # Removing main.c because it would link to other executables
 list(REMOVE_ITEM C_SOURCES "${MAIN_FILE_PATH}")
@@ -24,12 +21,12 @@ list(REMOVE_ITEM C_SOURCES "${MAIN_FILE_PATH}")
 set(EXECUTABLE "color_creator")
 
 # Add executable target
-add_executable(${EXECUTABLE} ${C_SOURCES} ${MAIN_FILE_PATH})
+add_executable(${EXECUTABLE} ${MAIN_FILE_PATH})
 
 # Find and link SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(${EXECUTABLE} ${SDL2_LIBRARIES})
+target_link_libraries(${EXECUTABLE} PRIVATE ${SDL2_LIBRARIES} lib_palette_creator lib_window_manager)
 
 #
 # Compile flags for any build type
@@ -92,6 +89,10 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
         generate_assembly_for_file(${SRC_FILE})
     endforeach()
 endif()
+
+add_subdirectory(palette_creator)
+
+add_subdirectory(window)
 
 ##################################################################
 # Commentary on compile flags
