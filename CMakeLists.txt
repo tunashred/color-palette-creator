@@ -11,6 +11,8 @@ project(color-palette-creator VERSION 0.1.0 LANGUAGES C CXX)
 
 # Include header files
 include_directories(${CMAKE_SOURCE_DIR}/include)
+# Include common dir
+include_directories(${CMAKE_SOURCE_DIR}/common/include)
 
 set(MAIN_FILE_PATH "${CMAKE_SOURCE_DIR}/main.c")
 
@@ -93,6 +95,8 @@ endif()
 add_subdirectory(palette_creator)
 
 add_subdirectory(window)
+
+add_subdirectory(common)
 
 ##################################################################
 # Commentary on compile flags

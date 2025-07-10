@@ -17,13 +17,15 @@ int main() {
     color_palette palette;
     generate_color_palette(&palette, NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
 
-    // generate the simple mandelbrot set
     /*
-        buffer* buff = generate_mandelbrot(...);
+        1. load default mandelbrot dll
+        2. set up interface (buttons and stuff)
+        3. draw mandelbrot
     */
+
     
     // TODO: actually should start with drawing mandelbrot, not palette
-    redraw_event_data redraw_info = {renderer, &palette, window_width, window_height, texture};
+    redraw_event_data redraw_info = {renderer, texture, draw_palette_to_texture, (void*)&palette, window_width, window_height};
     SDL_TimerID timer_id = SDL_AddTimer(100, scheduled_redraw, &redraw_info);
 
     // render_palette_window(NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
@@ -34,9 +36,9 @@ int main() {
             // some int for option modes: mandelbrot, palette
             /*
                 then a switch based on that int
-                depending on case, the redraw_info->buffer_data and redraw_info->draw_to_texture are chosen
+                depending on case, the redraw_info->args and redraw_info->draw_to_texture are chosen
             */
-            update_and_render_texture(renderer, texture, &palette, redraw_info.window_width, redraw_info.window_height);
+            update_and_render_texture(&redraw_info);
             needs_redraw = 0;
         }
         SDL_Delay(10);

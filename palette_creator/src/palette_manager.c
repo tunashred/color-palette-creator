@@ -1,4 +1,5 @@
 #include "palette_manager.h"
+#include "redraw_data.h"
 
 void generate_color_palette(
         color_palette* palette,
@@ -96,13 +97,14 @@ void color_function_changer(int pressed_key, color_palette* palette) {
     }
 }
 
-void draw_palette_to_texture(SDL_Texture* texture, int window_width,
-                            int window_height, uint8_t* red_array, uint8_t* green_array,
-                            uint8_t* blue_array, uint8_t (*combined_array)[3]) {
+void draw_palette_to_texture(void* args) {
+    redraw_event_data* data = (redraw_event_data*) args;
+    int window_height = data->window_height, window_width = data->window_width;
+    color_palette* palette = (color_palette*) data->args;
     void* pixels;
     int pitch;
 
-    SDL_LockTexture(texture, NULL, &pixels, &pitch);
+    SDL_LockTexture(data->texture, NULL, &pixels, &pitch);
     uint32_t* pixel_data = (uint32_t*) pixels;
 
     int stripe_height = window_height / 4;
@@ -114,7 +116,7 @@ void draw_palette_to_texture(SDL_Texture* texture, int window_width,
     for (int y = 0; y < stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
             int palette_index = (x * palette_size) / window_width;
-            uint8_t red = red_array[palette_index];
+            uint8_t red = palette->r[palette_index];
             pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, red, 0, 0, 255);
         }
     }
@@ -123,7 +125,7 @@ void draw_palette_to_texture(SDL_Texture* texture, int window_width,
     for (int y = stripe_height; y < 2 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
             int palette_index = (x * palette_size) / window_width;
-            uint8_t green = green_array[palette_index];
+            uint8_t green = palette->g[palette_index];
             pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, 0, green, 0, 255);
         }
     }
@@ -132,7 +134,7 @@ void draw_palette_to_texture(SDL_Texture* texture, int window_width,
     for (int y = 2 * stripe_height; y < 3 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
             int palette_index = (x * palette_size) / window_width;
-            uint8_t blue = blue_array[palette_index];
+            uint8_t blue = palette->b[palette_index];
             pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, 0, 0, blue, 255);
         }
     }
@@ -141,13 +143,13 @@ void draw_palette_to_texture(SDL_Texture* texture, int window_width,
     for (int y = 3 * stripe_height; y < 4 * stripe_height; ++y) {
         for (int x = 0; x < window_width; ++x) {
             int palette_index = (x * palette_size) / window_width;
-            uint8_t red = combined_array[palette_index][0];
-            uint8_t green = combined_array[palette_index][1];
-            uint8_t blue = combined_array[palette_index][2];
+            uint8_t red = palette->rgb[palette_index][0];
+            uint8_t green = palette->rgb[palette_index][1];
+            uint8_t blue = palette->rgb[palette_index][2];
             pixel_data[y * (pitch / 4) + x] = SDL_MapRGBA(format, red, green, blue, 255);
         }
     }
 
-    SDL_UnlockTexture(texture);
+    SDL_UnlockTexture(data->texture);
     SDL_FreeFormat(format);
 }

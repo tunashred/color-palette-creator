@@ -24,8 +24,6 @@ void export_palette(color_palette* palette);
 
 void color_function_changer(int pressed_key, color_palette* palette);
 
-void draw_palette_to_texture(SDL_Texture* texture, int window_width,
-                            int window_height, uint8_t* red_array, uint8_t* green_array,
-                            uint8_t* blue_array, uint8_t (*combined_array)[3]);
+void draw_palette_to_texture(void* args);
 
 #endif
