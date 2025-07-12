@@ -12,4 +12,6 @@ typedef struct {
     int window_height;
 } redraw_event_data;
 
+enum Mode {MANDELBROT = 1, PALETTE};
+
 #endif

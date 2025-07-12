@@ -2,12 +2,15 @@
 #define SDL_MANAGER_H
 
 #include <SDL2/SDL.h>
+#include "common.h"
 
 SDL_Window* window_init(int window_width, int window_height);
 
 SDL_Renderer* create_renderer(SDL_Window* window, int index, Uint32 flags);
 
 Uint32 scheduled_redraw(Uint32 interval, void* args);
+
+int handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* redraw_info, int* running, int mode);
 
 void render_palette_window(
     char* file_name, double brightness_rate, uint8_t (*red_func)(int, int),

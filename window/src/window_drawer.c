@@ -1,8 +1,8 @@
 #include "window_drawer.h"
-#include "redraw_data.h"
+#include "common.h"
 
 void update_and_render_texture(redraw_event_data* data) {
-    data->p_func_draw_to_texture(data->args);
+    data->p_func_draw_to_texture(data);
     SDL_RenderCopy(data->renderer, data->texture, NULL, NULL);
     SDL_RenderPresent(data->renderer);
 }

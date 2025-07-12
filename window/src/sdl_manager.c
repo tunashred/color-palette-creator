@@ -1,4 +1,5 @@
 #include "sdl_manager.h"
+#include "palette_manager.h"
 #include "window_drawer.h"
 
 SDL_Window* window_init(int window_width, int window_height) {
@@ -51,8 +52,14 @@ Uint32 scheduled_redraw(Uint32 interval, void* args) {
     return interval;
 }
 
-int handle_sdl_events(SDL_Event* event, int* running, SDL_Window* window, redraw_event_data* redraw_info, color_palette* palette, SDL_Texture** texture) {
+int handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* data, int* running, int mode) {
+    /*
+        1. take redraw_event_data
+        2. based on event, do things
+    */
     int needs_redraw = 0;
+    SDL_Texture* texture = data->texture;
+    color_palette* palette;
 
     while(SDL_PollEvent(event)) {
         if(event->type == SDL_QUIT) {
@@ -62,25 +69,37 @@ int handle_sdl_events(SDL_Event* event, int* running, SDL_Window* window, redraw
             int new_width, new_height;
             SDL_GetWindowSize(window, &new_width, &new_height);
 
-            redraw_info->window_width = new_width;
-            redraw_info->window_height = new_height;
+            data->window_width = new_width;
+            data->window_height = new_height;
 
-            SDL_DestroyTexture(*texture);
-            *texture = SDL_CreateTexture(redraw_info->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, new_width, new_height);
-            redraw_info->texture = *texture;
+            SDL_DestroyTexture(texture);
+            texture = SDL_CreateTexture(data->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, new_width, new_height);
+            data->texture = texture;
 
             needs_redraw = 1;
         }
-        else if(event->type == SDL_USEREVENT) { // timed redraw event
-            needs_redraw = 1;
+
+        switch (mode) {
+            case MANDELBROT:
+                // mandelbrot specific actions: mousewheel, clicking buttons etc.
+                break;
+            case PALETTE:
+                palette = (color_palette*) data->args;
+                if(event->type == SDL_USEREVENT) { // timed redraw event
+                    needs_redraw = 1;
+                }
+                else if(event->type == SDL_KEYDOWN) { // changing colors with R, G, B key presses
+                    if(event->key.keysym.sym == SDLK_x) {
+                        export_palette(palette);
+                    } else {
+                        color_function_changer(event->key.keysym.sym, palette);
+                    }
+                }
+                break;
+            default:
+                break;
         }
-        else if(event->type == SDL_KEYDOWN) { // changing colors with R, G, B key presses
-            if(event->key.keysym.sym == SDLK_x) {
-                export_palette(palette);
-            } else {
-                color_function_changer(event->key.keysym.sym, palette);
-            }
-        }
+
     }
     return needs_redraw;
 }

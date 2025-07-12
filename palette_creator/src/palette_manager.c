@@ -1,5 +1,5 @@
 #include "palette_manager.h"
-#include "redraw_data.h"
+#include "common.h"
 
 void generate_color_palette(
         color_palette* palette,

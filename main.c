@@ -31,7 +31,7 @@ int main() {
     // render_palette_window(NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
 
     while(running) {
-        needs_redraw |= handle_sdl_events(&event, &running, window, &redraw_info, &palette, &texture);
+        needs_redraw |= handle_sdl_events(&event, window, &redraw_info, &running, PALETTE);
         if(needs_redraw) {
             // some int for option modes: mandelbrot, palette
             /*

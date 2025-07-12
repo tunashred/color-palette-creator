@@ -1,7 +1,7 @@
 #ifndef WINDOW_DRAWER_H
 #define WINDOW_DRAWER_H
 
-#include "redraw_data.h"
+#include "common.h"
 
 #include <SDL2/SDL.h>
 
