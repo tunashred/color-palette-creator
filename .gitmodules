@@ -1,0 +1,3 @@
+[submodule "submodules/mandelbrot_singlecore"]
+	path = submodules/mandelbrot_singlecore
+	url = https://github.com/tunashred/mandelbrot.git
