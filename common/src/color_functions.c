@@ -1,4 +1,5 @@
 #include "color_functions.h"
+#include <math.h>
 
 double linear_map(double from, double from_min, double from_max, double to_min, double to_max) {
     double interval_from = from_max - from_min;

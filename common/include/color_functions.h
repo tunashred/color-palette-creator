@@ -2,9 +2,6 @@
 #define COLOR_MAPPING_H
 
 #include <stdint.h>
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
 
 #define RGB_CHANNELS 3
 #define NUM_COLORS 1500

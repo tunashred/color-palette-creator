@@ -28,7 +28,7 @@ add_executable(${EXECUTABLE} ${MAIN_FILE_PATH})
 # Find and link SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(${EXECUTABLE} PRIVATE ${SDL2_LIBRARIES} lib_palette_creator lib_window_manager)
+target_link_libraries(${EXECUTABLE} PRIVATE ${SDL2_LIBRARIES} lib_palette_creator lib_window_manager lib_mandelbrot_wrapper)
 
 #
 # Compile flags for any build type
@@ -48,9 +48,6 @@ set(COMPILE_FLAGS
 
 # Add compile flags
 target_compile_options(${EXECUTABLE} PRIVATE ${COMPILE_FLAGS})
-
-# Link libs
-target_link_options(${EXECUTABLE} PRIVATE -lm)
 
 # Release specific flags
 set(RELEASE_FLAGS
@@ -93,10 +90,12 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 add_subdirectory(palette_creator)
-
 add_subdirectory(window)
-
 add_subdirectory(common)
+add_subdirectory(mandelbrot)
+
+# Submodules
+add_subdirectory(submodules/mandelbrot_singlecore)
 
 ##################################################################
 # Commentary on compile flags

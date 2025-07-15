@@ -1,0 +1,8 @@
+set(MANDELBROT_WRAPPER_LIB "lib_mandelbrot_wrapper")
+
+file(GLOB_RECURSE C_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
+
+add_library(${MANDELBROT_WRAPPER_LIB} STATIC ${C_SOURCES})
+
+target_include_directories(${MANDELBROT_WRAPPER_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(${MANDELBROT_WRAPPER_LIB} PRIVATE lib_common)

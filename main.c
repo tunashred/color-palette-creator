@@ -1,7 +1,11 @@
 #include "color_functions.h"
+#include "common.h"
+#include "load_lib.h"
+#include "mandelbrot.h"
 #include "sdl_manager.h"
 #include "palette_manager.h"
 #include "window_drawer.h"
+#include <dlfcn.h>
 
 int main() {
     int window_width  = 640,
@@ -22,16 +26,35 @@ int main() {
         2. set up interface (buttons and stuff)
         3. draw mandelbrot
     */
+    void* handle = dlopen("lib/liblib_mandelbrot_singlecore.so", RTLD_NOW);
+    if (!handle) {
+        fprintf(stderr, "Error: %s\n", dlerror());
+        return 1;
+    }
 
-    
+    initialize_mandelbrot_data();
+
+    mandelbrot_singlecore_args singlecore_args = {
+                                                        NULL, window_height, window_width, -0.43,
+                                                        -0.1, 1, 1500, 0, 0.3,
+                                                        sin_x_la_4, unu_minus_unu_pe_x, x_patrat_0_1_to_0_2
+                                                    };
+
+    mandelbrot_data default_single_core_data = {(void*) &singlecore_args,
+                                                    .p_func_mandelbrot = NULL,
+                                                    .mode = MANDELBROT_SINGLECORE};
+
+    default_single_core_data.p_func_mandelbrot.singlecore = get_mandelbrot_singlecore_func(handle);
+
     // TODO: actually should start with drawing mandelbrot, not palette
-    redraw_event_data redraw_info = {renderer, texture, draw_palette_to_texture, (void*)&palette, window_width, window_height};
+    // redraw_event_data redraw_info = {renderer, texture, draw_palette_to_texture, (void*)&palette, window_width, window_height, PALETTE};
+    redraw_event_data redraw_info = {renderer, texture, draw_mandelbrot_to_texture, (void*) &default_single_core_data, window_width, window_height, MANDELBROT_SINGLECORE};
     SDL_TimerID timer_id = SDL_AddTimer(100, scheduled_redraw, &redraw_info);
 
     // render_palette_window(NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
 
     while(running) {
-        needs_redraw |= handle_sdl_events(&event, window, &redraw_info, &running, PALETTE);
+        needs_redraw |= handle_sdl_events(&event, window, &redraw_info, &running, MANDELBROT_SINGLECORE);
         if(needs_redraw) {
             // some int for option modes: mandelbrot, palette
             /*

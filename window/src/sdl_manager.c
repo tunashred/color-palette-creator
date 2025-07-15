@@ -80,8 +80,11 @@ int handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* d
         }
 
         switch (mode) {
-            case MANDELBROT:
+            case MANDELBROT_SINGLECORE:
                 // mandelbrot specific actions: mousewheel, clicking buttons etc.
+                if(event->type == SDL_USEREVENT) { // timed redraw event
+                    needs_redraw = 1;
+                }
                 break;
             case PALETTE:
                 palette = (color_palette*) data->args;
