@@ -14,6 +14,11 @@ int main() {
     SDL_Renderer* renderer = create_renderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
     SDL_Event event;
+    
+    if (!texture) {
+        fprintf(stderr, "Failed to create texture: %s\n", SDL_GetError());
+        return 1;
+    }
 
     int running = 1;
     int needs_redraw = 1;
@@ -49,7 +54,7 @@ int main() {
     // TODO: actually should start with drawing mandelbrot, not palette
     // redraw_event_data redraw_info = {renderer, texture, draw_palette_to_texture, (void*)&palette, window_width, window_height, PALETTE};
     redraw_event_data redraw_info = {renderer, texture, draw_mandelbrot_to_texture, (void*) &default_single_core_data, window_width, window_height, MANDELBROT_SINGLECORE};
-    SDL_TimerID timer_id = SDL_AddTimer(100, scheduled_redraw, &redraw_info);
+    SDL_TimerID timer_id = SDL_AddTimer(2500, scheduled_redraw, &redraw_info);
 
     // render_palette_window(NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
 
@@ -64,7 +69,7 @@ int main() {
             update_and_render_texture(&redraw_info);
             needs_redraw = 0;
         }
-        SDL_Delay(10);
+        SDL_Delay(2500);
     }
 
     SDL_RemoveTimer(timer_id);

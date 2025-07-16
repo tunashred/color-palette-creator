@@ -49,6 +49,8 @@ set(COMPILE_FLAGS
 # Add compile flags
 target_compile_options(${EXECUTABLE} PRIVATE ${COMPILE_FLAGS})
 
+# target_link_options(${EXECUTABLE} PRIVATE -fsanitize=address)
+
 # Release specific flags
 set(RELEASE_FLAGS
     -D_FORTIFY_SOURCE=2
