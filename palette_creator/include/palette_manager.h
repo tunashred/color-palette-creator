@@ -1,10 +1,11 @@
 #ifndef PALETTE_MANAGER_H
 #define PALETTE_MANAGER_H
 
-#include "color_functions.h"
-
 #include <stdint.h>
 #include <SDL2/SDL.h>
+
+#include "common.h"
+#include "color_functions.h"
 
 typedef struct {
     uint8_t r[NUM_COLORS];
@@ -17,8 +18,8 @@ typedef struct {
 } color_palette;
 
 void generate_color_palette(color_palette* palette, char* file_name, double brightness_rate, 
-                            uint8_t (*r_func)(int, int), uint8_t (*g_func)(int, int), 
-                            uint8_t (*b_func)(int, int));
+                            color_mapping_func r_func, color_mapping_func g_func, 
+                            color_mapping_func b_func);
 
 void export_palette(color_palette* palette);
 
