@@ -1,5 +1,9 @@
-#include "sdl_manager.h"
-#include "palette_manager.h"
+
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_video.h"
+#include "palette_creator/palette_manager.h"
+
+#include "window/sdl_manager.h"
 
 SDL_Window* window_init(int window_width, int window_height) {
     if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
@@ -53,7 +57,7 @@ void handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* 
     color_palette* palette;
 
     while (SDL_PollEvent(event)) {
-        if(event->type == SDL_QUIT) {
+        if (event->type == SDL_QUIT) {
             SDL_LockMutex(data->redraw_mutex);
             data->running = false;
             data->cancel_current_draw = false;

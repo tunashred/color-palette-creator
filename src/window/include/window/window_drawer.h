@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "common.h"
+#include "common/common.h"
 
 void draw(redraw_event_data* data);
 

@@ -9,11 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Project name and version
 project(color-palette-creator VERSION 0.1.0 LANGUAGES C CXX)
 
-# Include header files
-include_directories(${CMAKE_SOURCE_DIR}/include)
-# Include common dir
-include_directories(${CMAKE_SOURCE_DIR}/common/include)
-
 set(MAIN_FILE_PATH "${CMAKE_SOURCE_DIR}/main.c")
 
 # Removing main.c because it would link to other executables
@@ -91,10 +86,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endforeach()
 endif()
 
-add_subdirectory(palette_creator)
-add_subdirectory(window)
-add_subdirectory(common)
-add_subdirectory(mandelbrot)
+add_subdirectory(src)
 
 # Submodules
 add_subdirectory(submodules/mandelbrot_singlecore)

@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "common.h"
+#include "common/common.h"
 
 SDL_Window* window_init(int window_width, int window_height);
 

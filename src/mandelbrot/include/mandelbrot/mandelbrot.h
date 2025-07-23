@@ -1,7 +1,7 @@
 #ifndef MANDELBROT_MANDELBROT_H
 #define MANDELBROT_MANDELBROT_H
 
-#include "common.h"
+#include "common/common.h"
 
 typedef struct {
     const char* file_name;

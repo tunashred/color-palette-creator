@@ -1,15 +1,14 @@
 #include <SDL2/SDL_thread.h>
 #include <dlfcn.h>
 
-#include "color_functions.h"
-#include "common.h"
-#include "load_lib.h"
-#include "mandelbrot.h"
-#include "sdl_manager.h"
-#include "palette_manager.h"
-#include "window_drawer.h"
+#include "common/color_functions.h"
+#include "common/common.h"
+#include "common/load_lib.h"
+#include "mandelbrot/mandelbrot.h"
+#include "window/sdl_manager.h"
+#include "palette_creator/palette_manager.h"
+#include "window/window_drawer.h"
 
-// TODO: globally add another level of directories for include dirs, dirs which are named after the corresponding lib
 int main() {
     int window_width  = 640,
         window_height = 480;

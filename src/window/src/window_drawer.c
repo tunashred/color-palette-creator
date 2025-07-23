@@ -1,10 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
 
-#include "window_drawer.h"
-#include "color_functions.h"
-#include "mandelbrot.h"
-#include "common.h"
+#include "window/window_drawer.h"
+#include "common/color_functions.h"
+#include "mandelbrot/mandelbrot.h"
+#include "common/common.h"
 
 void draw(redraw_event_data* data) {
     data->p_func_draw_to_texture(data);

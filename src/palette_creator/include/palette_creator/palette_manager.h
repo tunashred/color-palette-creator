@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-#include "common.h"
-#include "color_functions.h"
+#include "common/common.h"
+#include "common/color_functions.h"
 
 typedef struct {
     uint8_t r[NUM_COLORS];

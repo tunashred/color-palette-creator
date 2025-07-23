@@ -1,6 +1,6 @@
-#include "color_functions.h"
-#include "mandelbrot.h"
-#include "common.h"
+#include "mandelbrot/mandelbrot.h"
+#include "common/color_functions.h"
+#include "common/common.h"
 
 // It no longer uses the texture. What if the mandelbrot functions could somehow write the textures too?
 // Could be faster than having just the main thread doing the pixel work
