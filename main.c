@@ -24,6 +24,7 @@ int main() {
         return 1;
     }
 
+    // render and show window with a black screen for start
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
@@ -32,37 +33,23 @@ int main() {
     color_palette palette;
     generate_color_palette(&palette, NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
 
-    /*
-        1. load default mandelbrot dll
-        2. set up interface (buttons and stuff)
-        3. draw mandelbrot
-    */
+    // this will be moved to a separate function and handled by events function
     void* handle = dlopen("lib/liblib_mandelbrot_singlecore.so", RTLD_NOW);
     if (!handle) {
         fprintf(stderr, "Error: %s\n", dlerror());
         return 1;
     }
 
-    initialize_mandelbrot_data();
-
-    mandelbrot_singlecore_args singlecore_args = {
-                                                    NULL, window_height, window_width, -0.43,
-                                                    -0.1, 1, 1500, 0, 0.3,
-                                                    sin_x_la_4, unu_minus_unu_pe_x, x_patrat_0_1_to_0_2
-                                                    };
-
-    mandelbrot_data default_single_core_data = {NULL,
-                                                (void*) &singlecore_args,
-                                                .p_func_mandelbrot = NULL,
-                                                .mode = MANDELBROT_SINGLECORE};
-
-    default_single_core_data.p_func_mandelbrot.singlecore = get_mandelbrot_singlecore_func(handle);
+    mandelbrot_data* default_single_core_data = initialize_mandelbrot_singlecore_data(window_height, window_width);
+    default_single_core_data->p_func_mandelbrot.singlecore = get_mandelbrot_singlecore_func(handle);
 
     // TODO: actually should start with drawing mandelbrot, not palette
     // redraw_event_data redraw_info = {renderer, texture, draw_palette_to_texture, (void*)&palette, window_width, window_height, PALETTE};
     SDL_mutex* redraw_mutex = SDL_CreateMutex();
     SDL_cond* redraw_cond = SDL_CreateCond();
-    redraw_event_data redraw_info = {renderer, texture, draw_mandelbrot_to_texture, (void*) &default_single_core_data, redraw_mutex, redraw_cond, window_width, window_height, true, false, false, false, MANDELBROT_SINGLECORE};
+    redraw_event_data redraw_info = {renderer, texture, draw_mandelbrot_to_texture, (void*) default_single_core_data,
+                                     redraw_mutex, redraw_cond, window_height, window_width, MANDELBROT_SINGLECORE,
+                                     true, false, false, false};
     
     SDL_Thread* draw_thread = SDL_CreateThread(draw_worker, "DrawThread", (void*) &redraw_info);
     SDL_DetachThread(draw_thread);

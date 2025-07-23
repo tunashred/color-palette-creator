@@ -15,13 +15,13 @@ typedef struct {
     void* args;
     SDL_mutex* redraw_mutex;
     SDL_cond* redraw_cond;
-    int window_width;
     int window_height;
+    int window_width;
+    int mode;
     bool running;
     bool currently_drawing;
     bool render_ready;
-    volatile bool cancel_current_draw;
-    int mode;
+    bool cancel_current_draw;
 } redraw_event_data;
 
 #endif

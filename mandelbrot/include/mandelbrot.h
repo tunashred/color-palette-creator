@@ -34,7 +34,6 @@ typedef struct {
 
 void draw_mandelbrot_to_texture(void* args);
 
-// TODO: switch to this
-void initialize_mandelbrot_data();
+mandelbrot_data* initialize_mandelbrot_singlecore_data(int window_height, int window_width);
 
 #endif

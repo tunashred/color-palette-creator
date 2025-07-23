@@ -1,5 +1,6 @@
-#include "common.h"
+#include "color_functions.h"
 #include "mandelbrot.h"
+#include "common.h"
 
 // It no longer uses the texture. What if the mandelbrot functions could somehow write the textures too?
 // Could be faster than having just the main thread doing the pixel work
@@ -9,8 +10,10 @@ void draw_mandelbrot_to_texture(void* args) {
 
     mandelbrot_data* m_args = (mandelbrot_data*) data->args;
 
-    free(m_args->picture);
-    m_args->picture = NULL;
+    if (m_args->picture) {
+        free(m_args->picture);
+        m_args->picture = NULL;
+    }
     
     uint32_t* picture = NULL;
     if (data->mode == MANDELBROT_SINGLECORE) {
@@ -32,6 +35,28 @@ void draw_mandelbrot_to_texture(void* args) {
     m_args->picture = picture;
 }
 
-void initialize_mandelbrot_data() {
+mandelbrot_data* initialize_mandelbrot_singlecore_data(int window_height, int window_width) {
+    mandelbrot_singlecore_args* singlecore_args = (mandelbrot_singlecore_args*) malloc(sizeof *singlecore_args);
+    *singlecore_args = (mandelbrot_singlecore_args) {
+                                                    .file_name          = NULL,
+                                                    .height             = window_height,
+                                                    .width              = window_width,
+                                                    .center_coord_real  = -0.43,
+                                                    .center_coord_im    = -0.1,
+                                                    .radius             = 1,
+                                                    .num_iters          = 1500,
+                                                    .rotate_degrees     = 0,
+                                                    .brightness         = 0.3,
+                                                    .red_mapping_func   = sin_x_la_4,
+                                                    .green_mapping_func = unu_minus_unu_pe_x,
+                                                    .blue_mapping_func  = x_patrat_0_1_to_0_2};
+    
+    mandelbrot_data* default_single_core_data = (mandelbrot_data*) malloc(sizeof *default_single_core_data);
+    *default_single_core_data = (mandelbrot_data) {
+                                                    .picture           = NULL,
+                                                    .mandelbrot_args   = (void*) singlecore_args,
+                                                    .p_func_mandelbrot = NULL,
+                                                    .mode              = MANDELBROT_SINGLECORE};
 
+    return default_single_core_data;
 }

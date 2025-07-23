@@ -2,19 +2,16 @@
 #include "palette_manager.h"
 
 SDL_Window* window_init(int window_width, int window_height) {
-    if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
         printf("SDL_InitSubSystem error: %s\n", SDL_GetError());
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
-    
-    SDL_Window* window = SDL_CreateWindow(
-                                            "Color palette creator", SDL_WINDOWPOS_UNDEFINED,
-                                            SDL_WINDOWPOS_UNDEFINED, window_width, window_height,
-                                            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
-                                        );
 
-    if(!window) {
+    SDL_Window* window = SDL_CreateWindow("This is a cool window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                          window_width, window_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    if (!window) {
         printf("SDL_CreateWindow error: %s\n", SDL_GetError());
         SDL_Quit();
         exit(EXIT_FAILURE);
@@ -25,7 +22,7 @@ SDL_Window* window_init(int window_width, int window_height) {
 
 SDL_Renderer* create_renderer(SDL_Window* window, int index, uint32_t flags) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, index, flags);
-    if(!renderer) {
+    if (!renderer) {
         printf("SDL_CreateRenderer error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -55,7 +52,7 @@ uint32_t scheduled_redraw(uint32_t interval, void* args) {
 void handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* data, int mode) {
     color_palette* palette;
 
-    while(SDL_PollEvent(event)) {
+    while (SDL_PollEvent(event)) {
         if(event->type == SDL_QUIT) {
             SDL_LockMutex(data->redraw_mutex);
             data->running = false;
@@ -65,7 +62,7 @@ void handle_sdl_events(SDL_Event* event, SDL_Window* window, redraw_event_data* 
             SDL_UnlockMutex(data->redraw_mutex);
         }
         // more cases for window?
-        else if(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_RESIZED) {
+        else if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_RESIZED) {
             int new_width, new_height;
             SDL_GetWindowSize(window, &new_width, &new_height);
 
