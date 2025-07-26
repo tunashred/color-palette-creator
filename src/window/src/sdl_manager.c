@@ -16,18 +16,17 @@ SDL_Window* window_init(int window_width, int window_height) {
                                           window_width, window_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     if (!window) {
-        printf("SDL_CreateWindow error: %s\n", SDL_GetError());
+        fprintf(stderr, "SDL_CreateWindow error: %s\n", SDL_GetError());
         SDL_Quit();
         exit(EXIT_FAILURE);
     }
-
     return window;
 }
 
 SDL_Renderer* create_renderer(SDL_Window* window, int index, uint32_t flags) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, index, flags);
     if (!renderer) {
-        printf("SDL_CreateRenderer error: %s\n", SDL_GetError());
+        fprintf(stderr, "SDL_CreateRenderer error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         exit(EXIT_FAILURE);
@@ -35,21 +34,15 @@ SDL_Renderer* create_renderer(SDL_Window* window, int index, uint32_t flags) {
     return renderer;
 }
 
-uint32_t scheduled_redraw(uint32_t interval, void* args) {
-    SDL_Event event;
-    SDL_UserEvent user_event;
-
-    user_event.type = SDL_USEREVENT;
-    user_event.code = 0;
-    user_event.data1 = args;
-    user_event.data2 = NULL;
-
-    event.type = SDL_USEREVENT;
-    event.user = user_event;
-
-    SDL_PushEvent(&event);
-
-    return interval;
+SDL_Texture* create_texture(SDL_Renderer* renderer, uint32_t format, int access, int width, int height) {
+    SDL_Texture* texture = SDL_CreateTexture(renderer, format, access, width, height);
+    if (!texture) {
+        fprintf(stderr, "SDL_CreateTexture error: %s\n", SDL_GetError());
+        // TODO: destroy stuff
+        SDL_Quit();
+        exit(EXIT_FAILURE);
+    }
+    return texture;
 }
 
 // TODO: refactor this monstrosity

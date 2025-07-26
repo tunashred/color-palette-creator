@@ -6,6 +6,13 @@
 #include "mandelbrot/mandelbrot.h"
 #include "common/common.h"
 
+void default_window_present(SDL_Window* window, SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    SDL_ShowWindow(window);
+}
+
 void draw(redraw_event_data* data) {
     data->p_func_draw_to_texture(data);
 }

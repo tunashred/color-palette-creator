@@ -5,6 +5,8 @@
 
 #include "common/common.h"
 
+void default_window_present(SDL_Window* window, SDL_Renderer* renderer);
+
 void draw(redraw_event_data* data);
 
 int draw_worker(void* args);

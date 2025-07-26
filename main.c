@@ -9,25 +9,16 @@
 #include "palette_creator/palette_manager.h"
 #include "window/window_drawer.h"
 
+// TODO: implement a safe malloc function
 int main() {
     int window_width  = 640,
         window_height = 480;
+
     SDL_Window* window = window_init(window_width, window_height);
     SDL_Renderer* renderer = create_renderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
-    SDL_Event event;
-    
-    // TODO: make wrappers for stuff like this
-    if (!texture) {
-        fprintf(stderr, "Failed to create texture: %s\n", SDL_GetError());
-        return 1;
-    }
+    SDL_Texture* texture = create_texture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
 
-    // render and show window with a black screen for start
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-    SDL_ShowWindow(window);
+    default_window_present(window, renderer);
 
     color_palette palette;
     generate_color_palette(&palette, NULL, 1, sin_crescator, log_pe_sin, x_patrat_0_5);
@@ -58,6 +49,7 @@ int main() {
     SDL_CondSignal(redraw_cond);
     SDL_UnlockMutex(redraw_mutex);
 
+    SDL_Event event;
     while(redraw_info.running) {
         handle_sdl_events(&event, window, &redraw_info, MANDELBROT_SINGLECORE);
 
@@ -74,7 +66,8 @@ int main() {
         SDL_UnlockMutex(redraw_mutex);
     }
 
-    // TODO: wrap these in functions for each lib
+    // TODO  : wrap these in functions for each lib
+    // TODO 2: need to free handle too?
     SDL_DestroyCond(redraw_cond);
     SDL_DestroyMutex(redraw_mutex);
     SDL_DestroyTexture(texture);
